@@ -20,7 +20,7 @@ func ParseToString(data *entity.Models) {
 
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	json.Unmarshal(byteValue, &data)
-	// return string(byteValue)
+
 }
 
 func WriteFile(newData *entity.Model) {
@@ -36,6 +36,30 @@ func WriteFile(newData *entity.Model) {
 	json.Unmarshal(file, &data)
 
 	data.Models = append(data.Models, *newData)
+	dataBytes, err := json.Marshal(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	err = ioutil.WriteFile(Path, dataBytes, 0644)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func WriteAll(newData entity.Model) {
+	Path := "D:\\project\\go\\go-trial\\data\\data.json"
+
+	file, err := ioutil.ReadFile(Path)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	json.Unmarshal(file, newData)
+
+	data := []entity.Model{}
+	data = append(data, newData)
+
 	dataBytes, err := json.Marshal(data)
 	if err != nil {
 		fmt.Println(err)

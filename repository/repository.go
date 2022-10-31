@@ -17,7 +17,7 @@ var dataModel entity.Model
 var parseData entity.Models
 
 func Home(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Welcome home!")
+	fmt.Fprintf(w, "CRUD RESTful API using GO within local file path!")
 }
 
 func Create(w http.ResponseWriter, r *http.Request) {
@@ -51,7 +51,7 @@ func GetOne(w http.ResponseWriter, r *http.Request) {
 func GetAll(w http.ResponseWriter, r *http.Request) {
 	util.ParseToString(&parseData)
 
-	json.NewEncoder(w).Encode(parseData)
+	json.NewEncoder(w).Encode(&parseData)
 
 }
 
@@ -85,6 +85,9 @@ func DeleteById(w http.ResponseWriter, r *http.Request) {
 			parseData.Models = append(parseData.Models[:i], parseData.Models[i+1:]...)
 			fmt.Fprintf(w, "Data with ID %v has been deleted successfully", IDkey)
 		}
+
 	}
+
+	util.WriteAll(dataModel)
 
 }
