@@ -78,23 +78,22 @@ func Update(w http.ResponseWriter, r *http.Request) {
 
 func DeleteById(w http.ResponseWriter, r *http.Request) {
 	IDkey := mux.Vars(r)["id"]
-	util.ParseToString(&dataModels)
+	// util.ParseToString(&dataModels)
 	for i, result := range dataModels.Models {
 		if result.Id == IDkey {
 			dataModels.Models = append(dataModels.Models[:i], dataModels.Models[i+1:]...)
 			fmt.Fprintf(w, "Data with ID %v has been deleted successfully", IDkey)
+			continue
+		} else {
+			util.WriteAll(result)
 		}
-
 	}
-
-	// util.WriteAll(dataModel)
-
 }
 
 func DeleteAll(w http.ResponseWriter, r *http.Request) {
 	util.ParseToString(&dataModels)
 	dataModel = entity.Model{}
-	util.WriteFile(&dataModel)
+	util.WriteAll(dataModel)
+	fmt.Fprintf(w, "Success Truncate Data ....")
 	json.NewEncoder(w).Encode(&dataModels)
-
 }

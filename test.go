@@ -17,5 +17,6 @@ func main() {
 	router.HandleFunc("/models/{id}", repository.GetOne).Methods("GET")
 	router.HandleFunc("/models/{id}", repository.Update).Methods("PATCH")
 	router.HandleFunc("/models/{id}", repository.DeleteById).Methods("DELETE")
+	router.HandleFunc("/models", repository.DeleteAll).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":6666", router))
 }
