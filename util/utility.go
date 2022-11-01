@@ -31,7 +31,7 @@ func WriteFile(newData *entity.Model) {
 		fmt.Println(err)
 	}
 
-	data := entity.Models{}
+	var data entity.Models
 
 	json.Unmarshal(file, &data)
 
@@ -50,17 +50,8 @@ func WriteFile(newData *entity.Model) {
 func WriteAll(newData entity.Model) {
 	Path := "D:\\project\\go\\go-trial\\data\\data.json"
 
-	file, err := ioutil.ReadFile(Path)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	json.Unmarshal(file, newData)
-
-	data := []entity.Model{}
-	data = append(data, newData)
-
-	dataBytes, err := json.Marshal(data)
+	// var data []entity.Model
+	dataBytes, err := json.Marshal(newData)
 	if err != nil {
 		fmt.Println(err)
 	}

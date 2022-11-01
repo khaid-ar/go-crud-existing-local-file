@@ -14,14 +14,14 @@ import (
 )
 
 var dataModel entity.Model
-var parseData entity.Models
+var dataModels entity.Models
 
 func Home(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "CRUD RESTful API using GO within local file path!")
 }
 
 func Create(w http.ResponseWriter, r *http.Request) {
-	util.ParseToString(&parseData)
+	util.ParseToString(&dataModels)
 
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -29,19 +29,19 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	}
 	json.Unmarshal(reqBody, &dataModel)
 	dataModel.Id = strconv.FormatInt(int64((rand.Intn)(100)), 16)
-	parseData.Models = append(parseData.Models, dataModel)
+	dataModels.Models = append(dataModels.Models, dataModel)
 	w.WriteHeader(http.StatusCreated)
 
-	json.NewEncoder(w).Encode(parseData)
+	json.NewEncoder(w).Encode(dataModels)
 	util.WriteFile(&dataModel)
 }
 
 func GetOne(w http.ResponseWriter, r *http.Request) {
-	util.ParseToString(&parseData)
+	util.ParseToString(&dataModels)
 
 	keyID := mux.Vars(r)["id"]
 
-	for _, result := range parseData.Models {
+	for _, result := range dataModels.Models {
 		if result.Id == keyID {
 			json.NewEncoder(w).Encode(result)
 		}
@@ -49,45 +49,52 @@ func GetOne(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAll(w http.ResponseWriter, r *http.Request) {
-	util.ParseToString(&parseData)
+	util.ParseToString(&dataModels)
 
-	json.NewEncoder(w).Encode(&parseData)
+	json.NewEncoder(w).Encode(&dataModels)
 
 }
 
 func Update(w http.ResponseWriter, r *http.Request) {
 	keyID := mux.Vars(r)["id"]
-	var updateData entity.Model
 
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		fmt.Fprintf(w, "ID not found")
 	}
-	json.Unmarshal(reqBody, &updateData)
+	json.Unmarshal(reqBody, &dataModel)
 
-	for i, result := range parseData.Models {
+	for i, result := range dataModels.Models {
 		if result.Id == keyID {
-			result.Id = updateData.Id
-			result.Name = updateData.Name
-			parseData.Models = append(parseData.Models[:i], result)
+			result.Name = dataModel.Name
+			result.Status = dataModel.Status
+			dataModels.Models = append(dataModels.Models[:i], result)
 			json.NewEncoder(w).Encode(result)
 		}
 	}
-	util.WriteFile(&dataModel)
+	// util.WriteAll(dataModel)
 
 }
 
 func DeleteById(w http.ResponseWriter, r *http.Request) {
 	IDkey := mux.Vars(r)["id"]
-
-	for i, result := range parseData.Models {
+	util.ParseToString(&dataModels)
+	for i, result := range dataModels.Models {
 		if result.Id == IDkey {
-			parseData.Models = append(parseData.Models[:i], parseData.Models[i+1:]...)
+			dataModels.Models = append(dataModels.Models[:i], dataModels.Models[i+1:]...)
 			fmt.Fprintf(w, "Data with ID %v has been deleted successfully", IDkey)
 		}
 
 	}
 
-	util.WriteAll(dataModel)
+	// util.WriteAll(dataModel)
+
+}
+
+func DeleteAll(w http.ResponseWriter, r *http.Request) {
+	util.ParseToString(&dataModels)
+	dataModel = entity.Model{}
+	util.WriteFile(&dataModel)
+	json.NewEncoder(w).Encode(&dataModels)
 
 }

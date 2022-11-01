@@ -1,9 +1,7 @@
 package main
 
 import (
-	"go-trial/entity"
 	"go-trial/repository"
-	"go-trial/util"
 	"log"
 	"net/http"
 
@@ -11,9 +9,6 @@ import (
 )
 
 func main() {
-
-	var data entity.Models
-	util.ParseToString(&data)
 
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", repository.Home)
