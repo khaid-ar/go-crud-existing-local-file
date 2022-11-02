@@ -6,9 +6,7 @@ import (
 	"go-trial/entity"
 	"go-trial/util"
 	"io/ioutil"
-	"math/rand"
 	"net/http"
-	"strconv"
 
 	"github.com/gorilla/mux"
 )
@@ -28,7 +26,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Data can't read")
 	}
 	json.Unmarshal(reqBody, &dataModel)
-	dataModel.Id = strconv.FormatInt(int64((rand.Intn)(100)), 16)
+	// dataModel.Id = strconv.FormatInt(int64((rand.Intn)(100)), 16) //generate id *deprecated
 	dataModels.Models = append(dataModels.Models, dataModel)
 	w.WriteHeader(http.StatusCreated)
 
@@ -49,9 +47,9 @@ func GetOne(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAll(w http.ResponseWriter, r *http.Request) {
-	util.ParseToString(&dataModels)
+	// util.ParseToString(&dataModels)
 
-	json.NewEncoder(w).Encode(&dataModels)
+	json.NewEncoder(w).Encode(dataModels)
 
 }
 
@@ -69,16 +67,16 @@ func Update(w http.ResponseWriter, r *http.Request) {
 			result.Name = dataModel.Name
 			result.Status = dataModel.Status
 			dataModels.Models = append(dataModels.Models[:i], result)
+			fmt.Fprintf(w, "Success update data with ID : ", result.Id)
 			json.NewEncoder(w).Encode(result)
 		}
 	}
-	// util.WriteAll(dataModel)
+	util.WriteAll(dataModel)
 
 }
 
 func DeleteById(w http.ResponseWriter, r *http.Request) {
 	IDkey := mux.Vars(r)["id"]
-	// util.ParseToString(&dataModels)
 	for i, result := range dataModels.Models {
 		if result.Id == IDkey {
 			dataModels.Models = append(dataModels.Models[:i], dataModels.Models[i+1:]...)
@@ -94,6 +92,6 @@ func DeleteAll(w http.ResponseWriter, r *http.Request) {
 	util.ParseToString(&dataModels)
 	dataModel = entity.Model{}
 	util.WriteAll(dataModel)
-	fmt.Fprintf(w, "Success Truncate Data ....")
-	json.NewEncoder(w).Encode(&dataModels)
+	fmt.Fprintf(w, "Success Truncate all Data ....")
+	json.NewEncoder(w).Encode(dataModel)
 }
